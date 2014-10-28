@@ -1,4 +1,6 @@
 ExCitp
 ======
 
-** TODO: Add description **
+Elixir CITP Server
+CITP Protocol: http://www.citp-protocol.org/
+
