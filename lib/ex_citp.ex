@@ -8,7 +8,8 @@ defmodule ExCitp do
 
     children = [
       # Define workers and child supervisors to be supervised
-      worker(ExCitp.Listener, [])
+      worker(ExCitp.Listener, []),
+      worker(ExCitp.PeerLocator, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
