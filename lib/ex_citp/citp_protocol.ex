@@ -16,7 +16,8 @@ defmodule ExCitp.CitpProtocol do
   def loop(socket, transport) do
     case transport.recv(socket, 0, 5000) do
       {:ok, data} ->
-        transport.send(socket, data)
+        Logger.debug "Got telnet data: #{inspect data}"
+        # transport.send(socket, data)
         loop(socket, transport)
       {:error, :timeout} ->
         loop(socket, transport)
