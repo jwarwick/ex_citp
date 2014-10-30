@@ -46,8 +46,15 @@ defmodule ExCitp.CitpProtocol do
 
   defp handle_packet(packet) do
     # Logger.debug "CitpProtocol: Got a packet: #{inspect packet}"
-    result = Citp.Packet.parse(packet)
+    handle_result(Citp.Packet.parse(packet))
+  end
+
+  defp handle_result({:ok, result}) do
     Logger.debug "CitpProtocol: parse packet #{inspect result}"
+    ExCitp.Events.send_event(result)
+  end
+  defp handle_result(result) do
+    Logger.debug "CitpProtocol: unknown packet #{inspect result}"
   end
 
 end

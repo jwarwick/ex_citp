@@ -8,6 +8,7 @@ defmodule ExCitp do
 
     children = [
       # Define workers and child supervisors to be supervised
+      worker(ExCitp.Events, []),
       worker(ExCitp.Listener, []),
       worker(ExCitp.PeerLocator, [])
     ]
