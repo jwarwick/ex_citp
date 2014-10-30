@@ -8,18 +8,19 @@ defmodule ExCitp.CitpProtocol do
   end
 
   def init(ref, socket, transport, _opts) do
-    Logger.debug "Initializing citp_protocol listener"
+    # Logger.debug "Initializing citp_protocol listener"
     {:ok, net} = transport.peername(socket)
     Logger.info "Accepted connection from #{inspect net}"
     :ok = :ranch.accept_ack(ref)
+    pname = Citp.Packet.build_pnam("ExCitp Server")
+    transport.send(socket, pname)
     loop(socket, transport, <<>>)
   end
 
   defp loop(socket, transport, buffer) do
     case transport.recv(socket, 0, 5000) do
       {:ok, data} ->
-        Logger.debug "Got telnet data: #{inspect data}"
-        # transport.send(socket, data)
+        # Logger.debug "Got telnet data: #{inspect data}"
         new_buffer = handle_data(data, buffer)
         loop(socket, transport, new_buffer)
       {:error, :timeout} ->
@@ -37,15 +38,16 @@ defmodule ExCitp.CitpProtocol do
     total_data = data <> buffer
     case Citp.Packet.complete_packet(total_data) do
       {:ok, packet, rest} -> handle_packet(packet)
-                       rest
+                             rest
       _ -> total_data
     end
   end
 
 
   defp handle_packet(packet) do
-    IO.puts "Got a packet: #{inspect packet}"
+    # Logger.debug "CitpProtocol: Got a packet: #{inspect packet}"
+    result = Citp.Packet.parse(packet)
+    Logger.debug "CitpProtocol: parse packet #{inspect result}"
   end
-  
 
 end
